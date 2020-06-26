@@ -1,6 +1,6 @@
 //пример работы с каналами
-//Я НЕ СМОГЛА ПОНЯТЬ, ПОЧЕМУ ДАННЫЕ НЕ ПЕРЕДАЮТСЯ В ВЫВОДЕ НА КОНСОЛИ, %v - ДОЛЖНО РАБОТАТЬ, НО ПОКА Я НЕ НАШЛА ОШИБКУ,
-//ПОЧЕМУ НЕ ВЫВОДЯТСЯ БУКВЫ A, B, C, D
+//Я НЕ СМОГЛА ПОНЯТЬ, ПОЧЕМУ ДАННЫЕ НЕ ПЕРЕДАЮТСЯ В ВЫВОДЕ НА КОНСОЛИ, А ИМЕННО БУКВЫ A, B, C, D
+//(в функции writeToChan это второй параметр)
 
 package main
 
@@ -18,7 +18,8 @@ var (
 //в функцию передается канал, в который записываются данные; сами данные и номер канала(first, second)
 func writeToChan(channel chan string, text string, number string) {
 	for symbol := range text { //считывается по символьно
-		fmt.Println(writeFormat, number, string(symbol))
+
+		fmt.Printf(writeFormat, number, string(symbol))
 		channel <- string(symbol) //запись в канал
 	}
 }
@@ -34,17 +35,17 @@ func main() {
 	defer close(second)
 
 	//отправляем строки в канал
-	go writeToChan(first, "ABCD", "First")
-	go writeToChan(second, "abcd", "Second")
+	go writeToChan(first, "ABCD", "FIRST")
+	go writeToChan(second, "abcd", "SECOND")
 
 	//вывод того, что в канале есть, каждую секунду
 	for {
 		time.Sleep(1 * time.Second)
 		select {
 		case firstData := <-first:
-			fmt.Println(readFormat, "First", firstData)
+			fmt.Println(readFormat, "FIRST", firstData)
 		case secondData := <-second:
-			fmt.Println(readFormat, "Second", secondData)
+			fmt.Println(readFormat, "SECOND", secondData)
 		default: //если данных для получения нет в каналах
 			fmt.Println("Default data")
 			return
